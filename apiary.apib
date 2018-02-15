@@ -1,157 +1,80 @@
 FORMAT: 1A
+HOST: http://127.0.0.1:8000
 
-# Gist Fox API
-Gist Fox API is a sample **pastes service** similar to [GitHub's Gist](http://gist.github.com).
+# testDrool
 
-## Media Types
-Where applicable this API uses the [HAL+JSON](http://stateless.co/hal_specification.html) media type to represent resources, states and affordances.
+Polls is a simple API allowing consumers to view polls and vote in them.
 
-Request bodies are using plain JSON to create new resources. Bodies of the PATCH requests are processed according to [RFC7396](https://tools.ietf.org/html/rfc7396).
+## Questions Collection [/questions]
 
-## Error States
-The common [HTTP Response Status Codes](https://github.com/for-GET/know-your-http-well/blob/master/status-codes.md) are used.
+### List All Questions [GET]
 
-## Gist Fox API Root [/]
++ Response 200 (application/json)
 
-Gist Fox API entry point. Provides initial API affordances in the form of the HTTP Link header and HAL links.
+        [
+            {
+                "question": "Favourite programming language?",
+                "published_at": "2015-08-05T08:40:51.620Z",
+                "choices": [
+                    {
+                        "choice": "Swift",
+                        "votes": 2048
+                    }, {
+                        "choice": "Python",
+                        "votes": 1024
+                    }, {
+                        "choice": "Objective-C",
+                        "votes": 512
+                    }, {
+                        "choice": "Ruby",
+                        "votes": 256
+                    }
+                ]
+            }
+        ]
 
-### Retrieve the Entry Point [GET]
+### Create a New Question [POST]
 
-+ Response 200 (application/hal+json)
-
-    + Headers
-
-            Link: <http://api.example.com/>;rel="self",<http://api.example.com/gists>;rel="gists"
-
-    + Attributes (Links)
-
-## Gist [/gists/{id}]
-
-A single Gist object. The Gist resource is the central resource in the Gist Fox API. It represents one paste - a single text note.
-
-+ Parameters
-    + id: 42 (required, string) - ID of the Gist
-
-### Retrieve a Single Gist [GET]
-
-+ Response 200 (application/hal+json)
-
-    + Headers
-
-            Link: <http://api.example.com/gists/42>;rel="self", <http://api.example.com/gists/42/star>;rel="star"
-
-    + Attributes (Gist)
-
-### Edit a Gist [PATCH]
+You may create your own question using this action. It takes a JSON
+object containing a question and a collection of answers in the
+form of choices.
 
 + Request (application/json)
 
-    + Attributes
-        + content: `Updated content...`
+        {
+            "question": "Favourite programming language?",
+            "choices": [
+                "Swift",
+                "Python",
+                "Objective-C",
+                "Ruby"
+            ]
+        }
 
-+ Response 200 (application/hal+json)
-
-    + Headers
-
-            Link: <http://api.example.com/gists/42>;rel="self", <http://api.example.com/gists/42/star>;rel="star"
-
-    + Attributes (Gist)
-
-### Delete a Gist [DELETE]
-
-+ Response 204
-
-## Gists Collection [/gists{?since}]
-
-Collection of Gists.
-
-+ Parameters
-    + since: 0 (optional, number) - Timestamp in unix time format. Only Gists updated at or after this time are returned.
-
-### List All Gists [GET]
-
-+ Response 200 (application/hal+json)
++ Response 201 (application/json)
 
     + Headers
 
-            Link: <http://api.example.com/gists>;rel="self"
+            Location: /questions/2
 
-    + Attributes (Gists Collection)
+    + Body
 
-### Create a Gist [POST]
-
-+ Request (application/json)
-
-    + Attributes
-        + description: `Gist description...`
-        + content: `String content...`
-
-+ Response 201 (application/hal+json)
-
-    + Headers
-
-            Link: <http://api.example.com/gists/42>;rel="self", <http://api.example.com/gists/42/star>;rel="star"
-
-    + Attributes (Gist)
-
-## Star [/gists/{id}/star]
-
-Gist's starred status.
-
-+ Parameters
-    + id: 42 (required, string) - ID of the Gist
-
-### Star a Gist [PUT]
-
-+ Response 204
-
-### Unstar a Gist [DELETE]
-
-+ Response 204
-
-### Check If a Gist Is Starred [GET]
-
-+ Response 200 (application/hal+json)
-
-    + Headers
-
-            Link: <http://api.example.com/gists/42/star>;rel="self"
-
-    + Attributes (Star)
-
-## Data Structures
-
-## Gist
-
-A single Gist object. The Gist resource is the central resource in the Gist Fox API. It represents one paste - a single text note.
-
-- id: `42`
-- created_at: `2016-04-14T02:15:15Z`
-- description: `Gist description...`
-- content: `String content...`
-- Include Links
-
-## Gists Collection
-
-Collection of Gists.
-
-- _embedded
-    - gists (array[Gist])
-- total (number) - Total number of listed Gists.
-- Include Links
-
-## Star
-
-Gist's starred status.
-
-- starred (boolean)
-- Include Links
-
-## Links
-
-HAL links.
-
-- _links
-    - *self*
-        - href - URL
-        - templated (boolean) - Whether the respective URL uses URI Templates
+            {
+                "question": "Favourite programming language?",
+                "published_at": "2015-08-05T08:40:51.620Z",
+                "choices": [
+                    {
+                        "choice": "Swift",
+                        "votes": 0
+                    }, {
+                        "choice": "Python",
+                        "votes": 0
+                    }, {
+                        "choice": "Objective-C",
+                        "votes": 0
+                    }, {
+                        "choice": "Ruby",
+                        "votes": 0
+                    }
+                ]
+            }
